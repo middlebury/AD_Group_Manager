@@ -202,6 +202,24 @@ class LdapConnector {
 	}
 	
 	/**
+	 * Escape a DN value and throw an InvalidArgumentException if it is not of a valid format.
+	 *
+	 * @param string $dn
+	 * @return string
+	 * @access public
+	 * @since 4/2/09
+	 */
+	public function escapeDnValue ($dnValue) {
+		$dnValue = strval($dnValue);
+		if (!preg_match('/^[a-z0-9_=\\\,.\'&\s()-]+$/i', $dnValue))
+			throw new InvalidArgumentException("dnValue '".$dnValue."' is not valid format.");
+
+		$dnValue = str_replace(',', '\,', $dnValue);
+
+		return $dnValue;
+	}
+
+	/**
 	 * Run an LDAP search
 	 * 
 	 * @param string $query

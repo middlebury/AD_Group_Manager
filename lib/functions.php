@@ -29,3 +29,19 @@ function forward ($action, array $params = array()) {
 	exit;
 }
 
+/**
+ * Answer an array of the parts of a DN with the domain stripped off.
+ *
+ * @param string $dn
+ * @return array
+ * @access public
+ * @since 8/28/09
+ */
+function dnToLevels ($dn) {
+	$levels = ldap_explode_dn($dn, 1);
+	unset($levels['count']);
+	array_pop($levels);
+	array_pop($levels);
+	$levels = array_reverse($levels);
+	return $levels;
+}

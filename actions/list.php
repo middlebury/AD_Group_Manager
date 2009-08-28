@@ -19,11 +19,7 @@ foreach ($groups as $key => $group) {
 $groups = array_values($groups);
 
 foreach ($groups as $group) {
-	$levels = ldap_explode_dn($group['dn'], 1);
-	unset($levels['count']);
-	array_pop($levels);
-	array_pop($levels);
-	$levels = array_reverse($levels);
+	$levels = dnToLevels($group['dn']);
 	
 	print "\n<div class='group'>";
 // 	print "\n\t<h2>".$group['cn'][0]."</h2>";
@@ -38,16 +34,19 @@ foreach ($groups as $group) {
 	
 	print "\n\t<fieldset class='members'>\n\t\t<legend>".implode(' / ', $levels)."</legend>";
 	print "\n\t\t<ul>";
-	sort ($group['member']);
-	foreach ($group['member'] as $memberDN) {
-		$members = $ldap->read('(objectclass=*)', $memberDN, array('givenName', 'sn', 'mail'));
-		$member = $members[0];
-		
-		print "\n\t\t<li>".$member['givenname'][0]." ".$member['sn'][0]." (".$member['mail'][0].") ";
-		print "\n\t\t\t<input type='hidden' class='group_id' value='".base64_encode($group['dn'])."'/>";
-		print "\n\t\t\t<input type='hidden' class='member_id' value='".base64_encode($memberDN)."'/>";
-		print "<button class='remove_button'>Remove</button>";
-		print "</li>";
+
+	if (isset($group['member']) && is_array($group['member'])) {
+		sort ($group['member']);
+		foreach ($group['member'] as $memberDN) {
+			$members = $ldap->read('(objectclass=*)', $memberDN, array('givenName', 'sn', 'mail'));
+			$member = $members[0];
+
+			print "\n\t\t<li>".$member['givenname'][0]." ".$member['sn'][0]." (".$member['mail'][0].") ";
+			print "\n\t\t\t<input type='hidden' class='group_id' value='".base64_encode($group['dn'])."'/>";
+			print "\n\t\t\t<input type='hidden' class='member_id' value='".base64_encode($memberDN)."'/>";
+			print "<button class='remove_button'>Remove</button>";
+			print "</li>";
+		}
 	}
 	print "\n\t\t</ul>";
 	print "\n\t\t<input type='text' class='new_member' size='50'/>";
@@ -59,3 +58,21 @@ foreach ($groups as $group) {
 	
 	print "\n</div>";
 }
+
+?>
+
+<form action="<?php echo getUrl('create_group'); ?>" method="post" class="create_group">
+	<p>Create a new group in
+		<select name="container_dn">
+<?php
+foreach ($ldapConfig['WritableGroupContainers'] as $dn) {
+	print "\n\t\t\t<option value=\"".base64_encode($dn)."\">".implode(" / ", dnToLevels($dn))."</option>";
+}
+?>
+
+		</select>
+		 named
+		<input type="text" name="new_group_name"/>
+		<input type="submit" value="Create"/>
+	</p>
+</form>
