@@ -47,6 +47,31 @@ function dnToLevels ($dn) {
 }
 
 /**
+ * Answer a string name for a DN
+ *
+ * @param string $dn
+ * @return string
+ * @access public
+ * @since 8/31/09
+ */
+function dnToName ($dn) {
+	$levels = ldap_explode_dn($dn, 1);
+	unset($levels['count']);
+
+// 	if (preg_match('/Miles/i', $dn)) {
+// 		var_dump($dn);
+// 		var_dump($levels);
+// 		exit;
+// 	}
+
+	if (count($levels) <= 2) {
+		return implode('.', $levels);
+	} else {
+		return str_replace('\2C', ',', $levels[0]);
+	}
+}
+
+/**
  * Print an HTML block for a group, respecting permissions.
  *
  * @param LdapConnector $ldap
@@ -98,4 +123,54 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 
 
 	print "\n</div>";
+}
+
+/**
+ * Print out a hierarchy of groups
+ *
+ * @param LdapConnector $ldap
+ * @param string $currentDn
+ * @param array $open
+ * @return void
+ * @access public
+ * @since 8/31/09
+ */
+function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "\n\t\t") {
+	print $tabs."<li class='group'>";
+	print "<a name='".base64_encode($currentDn)."'></a>";
+	print "<a href='";
+	if (in_array($currentDn, $open)) {
+		$parentKey = array_search($currentDn, $open) + 1;
+		if (isset($open[$parentKey]))
+			print getUrl('list_all', array('current' => base64_encode($open[$parentKey]))).'#'.base64_encode($currentDn);
+		else
+			print getUrl('list_all');
+	} else
+		print getUrl('list_all', array('current' => base64_encode($currentDn))).'#'.base64_encode($currentDn);
+	print "'>".dnToName($currentDn)."</a>";
+
+	if (in_array($currentDn, $open)) {
+		// If this is an OU, print out its children
+		$children = $ldap->getList('(|(objectClass=group)(objectClass=organizationalUnit))', $currentDn, array('dn'));
+		if (count($children)) {
+			print $tabs."<ul>";
+			foreach ($children as $child) {
+				printHierarchy($ldap, $child['dn'], $open, $tabs."\t");
+			}
+			print $tabs."</ul>";
+		}
+		// If this is a group, print out its members.
+		else {
+			$groups = $ldap->read('(objectClass=group)', $currentDn, array('managedby', 'member'));
+			if (count($groups) == 1 && isset($groups[0]['member'])) {
+				print $tabs."<ul class='members'>";
+				foreach ($groups[0]['member'] as $member) {
+					print $tabs."\t<li>".dnToName($member)."</li>";
+				}
+				print $tabs."</ul>";
+			}
+		}
+	}
+
+	print $tabs."</li>";
 }

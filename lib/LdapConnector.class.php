@@ -278,6 +278,33 @@ class LdapConnector {
 	}
 	
 	/**
+	 * List the contents of elements below a dn
+	 *
+	 * @param string $query
+	 * @param string $baseDN
+	 * @param optional array $attributes
+	 * @return array
+	 * @access public
+	 * @since 8/31/09
+	 */
+	public function getList ($query, $baseDN, array $attributes = array()) {
+		if (!$this->_connection)
+			throw new LDAPException ("Not connected to LDAP host <b>".$this->_config['LDAPHost']."</b>.");
+
+		if (!$this->_bind)
+			$this->bindAsAdmin();
+
+		$result = ldap_list($this->_connection, $baseDN, $query, $attributes, 0);
+
+		if (ldap_errno($this->_connection))
+			throw new LDAPException("Read failed for query '$query' at DN '$baseDN' with message: ".ldap_error($this->_connection).' Code: '.ldap_errno($this->_connection));
+
+		$entries = ldap_get_entries($this->_connection, $result);
+		ldap_free_result($result);
+		return $this->reduceLdapResults($entries);
+	}
+
+	/**
 	 * Reduce a set of results into nicely nested PHP arrays without count elements.
 	 * 
 	 * @param array $resultSet
