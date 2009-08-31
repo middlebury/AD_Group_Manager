@@ -324,6 +324,29 @@ class LdapConnector {
 	}
 	
 	/**
+	 * Delete an entry frp, the LDAP directory
+	 *
+	 * @param string $dn The DN of the entry to delete
+	 * @return boolean True on success. Exceptions will be thrown on error
+	 * @access public
+	 * @since 8/28/09
+	 */
+	public function delete ($dn) {
+		if (!$this->_connection)
+			throw new LDAPException ("Not connected to LDAP host <b>".$this->_config['LDAPHost']."</b>.");
+
+		if (!$this->_bind)
+			$this->bindAsAdmin();
+
+		$success = ldap_delete($this->_connection, $dn);
+
+		if (ldap_errno($this->_connection) || !$success)
+			throw new LDAPException("Delete failed for dn '$dn' with message: ".ldap_error($this->_connection).' Code: '.ldap_errno($this->_connection));
+
+		return true;
+	}
+
+	/**
 	 * Add an attribute value to an LDAP entry
 	 * 
 	 * @param string $dn

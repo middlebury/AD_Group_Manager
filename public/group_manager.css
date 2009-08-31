@@ -43,3 +43,7 @@
 .group fieldset.members {
 	width: 450px;
 }
+
+.group div.delete_controls {
+	margin-top: 10px;
+}

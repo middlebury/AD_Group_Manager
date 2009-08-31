@@ -33,13 +33,20 @@ try {
 } catch (LdapException $e) {
 }
 
-$entry['cn'] = $newGroupName;
-$entry['objectClass'][0] = 'top';
-$entry['objectClass'][1] = 'group';
-$entry['groupType']="2";
-$entry['managedBy'] = $_SESSION['user'];
+$entry['cn'][0] = $newGroupName;
+$entry['objectclass'][0] = 'top';
+$entry['objectclass'][1] = 'group';
+$entry['grouptype']="2";
+$entry['managedby'][0] = $_SESSION['user'];
 // $entry["sAMAccountName"] = $newGroupName;
 
+// create the new group
 $ldap->add($groupId, $entry);
 
-forward('list');
+// Print out its HTML for insertion into the document
+while(ob_get_level())
+	ob_end_clean();
+header('Content-Type: text/html');
+$entry['dn'] = $groupId;
+printGroupHtml($ldap, $entry);
+exit;
