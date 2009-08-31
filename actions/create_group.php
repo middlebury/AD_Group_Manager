@@ -42,8 +42,4 @@ $entry['managedBy'] = $_SESSION['user'];
 
 $ldap->add($groupId, $entry);
 
-while(ob_get_level())
-	ob_end_clean();
-header('Content-Type: text/plain');
-print "Success";
-exit;
+forward('list');
