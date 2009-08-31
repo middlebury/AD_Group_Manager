@@ -28,7 +28,7 @@ if (isset($_GET['limit'])) {
 	$limit = 20;
 }
 
-$results = $ldap->search('(ANR='.$q.')', $ldapConfig['BaseDN'], array('givenName', 'sn', 'cn', 'mail', 'objectClass'), $limit);
+$results = $ldap->search('(&(ANR='.$q.')(objectClass=User)(!(objectClass=Computer)))', $ldapConfig['BaseDN'], array('givenName', 'sn', 'cn', 'mail', 'objectClass'), $limit);
 foreach ($results as $entry) {
 	if (in_array('group', $entry['objectclass'])) {
 		$levels = ldap_explode_dn($entry['dn'], 1);
