@@ -20,6 +20,13 @@ foreach ($groups as $key => $group) {
 }
 $groups = array_values($groups);
 
+// Sort the groups
+$sortKeys = array();
+foreach ($groups as $group)
+	$sortKeys[] = implode(' / ', dnToLevels($group['dn']));
+array_multisort($sortKeys, $groups);
+
+// PRint the groups
 foreach ($groups as $group) {
 	printGroupHtml($ldap, $group);
 }
