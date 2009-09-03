@@ -135,7 +135,7 @@ class LdapConnector {
 	}
 	
 	/**
-	 * Answer a user DN given a username or email address.
+	 * Answer a user DN given a user id
 	 *
 	 * An LDAPException is thrown on failure.
 	 * 
@@ -144,7 +144,7 @@ class LdapConnector {
 	 * @access public
 	 * @since 8/27/09
 	 */
-	public function getUserDN ($username) {
+	public function getUserDN ($id) {
 		if (!$this->_connection)
 			throw new LDAPException ("Not connected to LDAP host <b>".$this->_config['LDAPHost']."</b>.");
 		
@@ -152,22 +152,22 @@ class LdapConnector {
 			$this->bindAsAdmin();
 		
 		// Match a search string that might match a username, email address, first and/or last name.
-		if (!preg_match('/^[a-z0-9_,.\'&\s@-]+$/i', $username))
+		if (!preg_match('/^[a-z0-9_,.\'&\s@-]+$/i', $id))
 			throw new InvalidArgumentException("query '$query' is not valid format.");
 		
 		$result = ldap_search($this->_connection, $this->_config['UserBaseDN'], 
-						"(|(samaccountname=".$username.")(mail=".$username."))", array('dn'));
+						"(".$this->_config['UserIdAttribute']."=".$id.")", array('dn'));
 						
 		if (ldap_errno($this->_connection))
-			throw new LDAPException("Read failed for username '$username' with message: ".ldap_error($this->_connection));
+			throw new LDAPException("Read failed for id '$id' with message: ".ldap_error($this->_connection));
 		
 		$entries = ldap_get_entries($this->_connection, $result);
 		ldap_free_result($result);
 		
 		if (!intval($entries['count']))
-			throw new UnknownIdException("Could not find a user matching '$username'.");
+			throw new UnknownIdException("Could not find a user matching '$id'.");
 		if (intval($entries['count']) > 1)
-			throw new OperationFailedException("Found more than one user matching '$username'.");
+			throw new OperationFailedException("Found more than one user matching '$id'.");
 		
 		return $entries[0]['dn'];
 	}

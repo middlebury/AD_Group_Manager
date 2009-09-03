@@ -41,6 +41,17 @@ if (!defined('SHOW_TIMERS'))
 if (!defined('DISPLAY_ERROR_BACKTRACE'))
 	define('DISPLAY_ERROR_BACKTRACE', false);
 
+require_once(MYDIR.'/lib/phpcas/source/CAS.php');
+
+// initialize phpCAS
+phpCAS::client(CAS_VERSION_2_0, CAS_HOST, CAS_PORT, CAS_PATH, false);
+// no SSL validation for the CAS server
+phpCAS::setNoCasServerValidation();
+// force CAS authentication
+phpCAS::forceAuthentication();
+
+// var_dump($_SESSION);
+
 $ldap = new LdapConnector($ldapConfig);
 $ldap->connect();
 
@@ -52,10 +63,22 @@ try {
 		else
 			throw new UnknownActionException('Invalid action format.');
 	} else {
-		$action = 'login';
+		$action = 'list';
 	}
-	if (!isset($_SESSION['user']) || !strlen($_SESSION['user']))
-		$action = 'login';
+	
+	if ($action == 'logout') {
+		phpCAS::logout();
+	}
+	
+	// Try to load the user's DN from the LDAP server. If they are not in
+	// LDAP (such as guests) then they cannot use this application.
+	if (!isset($_SESSION['user_dn']) || !strlen($_SESSION['user_dn'])) {
+		try {
+			$_SESSION['user_dn'] = $ldap->getUserDN(phpCAS::getUser());
+		} catch (UnknownIdException $e) {
+			throw new PermissionDeniedException("We could not find your account on the LDAP server. You are not authorized to create groups.");
+		}
+	}
 	
 	ob_start();
 	if (file_exists(MYDIR.'/actions/'.$action.'.php'))

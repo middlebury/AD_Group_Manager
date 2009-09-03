@@ -1,5 +1,10 @@
 <?php
 
+// CAS Login Info
+define('CAS_HOST', 'login.middlebury.edu');
+define('CAS_PORT', 443);
+define('CAS_PATH', '/cas');
+
 // Configure the first LDAP Server.
 $ldapConfig = array();
 $ldapConfig['LDAPHost']				= 'ad.middlebury.edu';

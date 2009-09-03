@@ -80,7 +80,7 @@ function dnToName ($dn) {
  * @since 8/31/09
  */
 function printGroupHtml (LdapConnector $ldap, array $group) {
-	$showControls = ($group['managedby'][0] == $_SESSION['user']);
+	$showControls = ($group['managedby'][0] == $_SESSION['user_dn']);
 
 	$levels = dnToLevels($group['dn']);
 	

@@ -29,7 +29,7 @@ $groups = $ldap->read('(objectclass=group)', $groupId, array('managedby', 'membe
 if (count($groups) != 1)
 	throw new Exception("Could not find the group specified");
 $group = $groups[0];
-if ($group['managedby'][0] != $_SESSION['user'])
+if ($group['managedby'][0] != $_SESSION['user_dn'])
 	throw new PermissionDeniedException("You are not authorized to manage this group.");
 
 // Verify that the user is not already in the group

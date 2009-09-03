@@ -8,12 +8,12 @@
  */ 
 
 // Already logged in.
-if (isset($_SESSION['user']) && strlen($_SESSION['user']))
+if (isset($_SESSION['user_dn']) && strlen($_SESSION['user_dn']))
 	forward('list');
 
 // Bind as the user and send them to the list
 if (isset($_POST['username']) && strlen($_POST['username']) && isset($_POST['password']) && strlen($_POST['password'])) {
-	$_SESSION['user'] = $ldap->bindAsUser($_POST['username'], $_POST['password']);
+	$_SESSION['user_dn'] = $ldap->bindAsUser($_POST['username'], $_POST['password']);
 	forward('list');
 }
 
