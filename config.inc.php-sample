@@ -5,6 +5,9 @@ define('CAS_HOST', 'login.middlebury.edu');
 define('CAS_PORT', 443);
 define('CAS_PATH', '/cas');
 
+// Define $getUserDisplayName as a custom callback function for accessing the current user's name.
+// $getUserDisplayName = create_function('', "	return phpCAS::getAttribute('FirstName').' '.phpCAS::getAttribute('LastName');");
+
 // Configure the first LDAP Server.
 $ldapConfig = array();
 $ldapConfig['LDAPHost']				= 'ad.middlebury.edu';

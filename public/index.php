@@ -43,6 +43,10 @@ if (!defined('DISPLAY_ERROR_BACKTRACE'))
 
 require_once(MYDIR.'/lib/phpcas/source/CAS.php');
 
+if (!isset($getUserDisplayName)) {
+	$getUserDisplayName = create_function('', 'return phpCAS::getUser();');
+}
+
 // initialize phpCAS
 phpCAS::client(CAS_VERSION_2_0, CAS_HOST, CAS_PORT, CAS_PATH, false);
 // no SSL validation for the CAS server

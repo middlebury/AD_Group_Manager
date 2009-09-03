@@ -1,9 +1,3 @@
-<ul class='menu'>
-	<li><a href="<?php echo getUrl('list'); ?>">My Web Groups</a></li>
-	<li><a href="<?php echo getUrl('list_web'); ?>">All Web Groups</a></li>
-	<li>All Groups</li>
-</ul>
-
 <ul id='group_tree'>
 
 <?php
