@@ -14,6 +14,25 @@ $ldapConfig['WritableGroupContainers'] 		= array(
 											'OU=MIIS,OU=web data,DC=middlebury,DC=edu',
 											);
 
+global $notifyConfig;
+$notifyConfig = array(
+	array(	'URL'			=> 'http://chisel.middlebury.edu/~afranco/directory/',
+			'Type'			=> 'POST',
+			'GroupParam'	=> 'group_id',
+			'OtherParams'	=> array(
+				'action'		=> 'clear_cache',
+				'ADMIN_ACCESS'	=> 'sdfj239ug2jasdgae01jLKJ',
+			),
+	),
+	array(	'URL'			=> 'http://chisel.middlebury.edu/~afranco/drupal/',
+			'Type'			=> 'GET',
+			'GroupParam'	=> 'group_id',
+			'OtherParams'	=> array(
+				'q'				=> 'casmmsync/update_group',
+				'passkey'		=> 'OkCacheCleared',
+			),
+	),
+);
 
 define('DISPLAY_ERROR_BACKTRACE', false);
 define('SHOW_TIMERS', true);

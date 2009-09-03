@@ -174,3 +174,39 @@ function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "
 
 	print $tabs."</li>";
 }
+
+/**
+ * Notify other systems of group changes
+ *
+ * @param string $groupDN The group DN that has changed.
+ * @return void
+ * @access public
+ * @since 9/1/09
+ */
+function notify ($groupDN) {
+	global $notifyConfig;
+
+	foreach ($notifyConfig as $config) {
+		$data = array($config['GroupParam'] => $groupDN);
+		$data = array_merge($data, $config['OtherParams']);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+
+		if (strtoupper($config['Type']) == 'POST') {
+			curl_setopt($ch, CURLOPT_URL, $config['URL']);
+			curl_setopt($ch, CURLOPT_POST, TRUE);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		} else {
+			curl_setopt($ch, CURLOPT_URL, $config['URL'].'?'.http_build_query($data));
+		}
+
+		$result = curl_exec($ch);
+		print $result."\n";
+		if ($result === FALSE || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
+			trigger_error("Group change notification failed for '".$config['URL']."' with message: ".$result, E_USER_WARNING);
+		curl_close($ch);
+	}
+}

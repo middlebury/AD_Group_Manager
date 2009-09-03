@@ -31,5 +31,8 @@ $ldap->delete($groupId);
 while(ob_get_level())
 	ob_end_clean();
 header('Content-Type: text/plain');
+
+notify($groupId);
+
 print "Success";
 exit;
