@@ -31,3 +31,15 @@ fieldset.group .members li {
 fieldset.group div.delete_controls {
 	margin-top: 10px;
 }
+
+#group_tree li {
+	list-style-type: circle;
+}
+
+#group_tree ul.manager {
+	padding-left: 25px;
+}
+#group_tree ul.manager li {
+	font-style: italic;
+	list-style-type: none;
+}

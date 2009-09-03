@@ -178,6 +178,11 @@ function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "
 		else {
 			$groups = $ldap->read('(objectClass=group)', $currentDn, array('managedby', 'member'));
 			if (count($groups) == 1 && isset($groups[0]['member'])) {
+				if (isset($groups[0]['managedby'][0])) {
+					print $tabs."<ul class='manager'>";
+					print $tabs."\t<li>Group Manager: ".dnToName($groups[0]['managedby'][0])."</li>";
+					print $tabs."</ul>";
+				}
 				print $tabs."<ul class='members'>";
 				foreach ($groups[0]['member'] as $member) {
 					print $tabs."\t<li>".dnToName($member)."</li>";
