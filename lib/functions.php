@@ -83,12 +83,29 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 	$showControls = ($group['managedby'][0] == $_SESSION['user']);
 
 	$levels = dnToLevels($group['dn']);
-
-	print "\n<div class='group'>";
-
-	print "\n\t<fieldset class='members'>\n\t\t<legend>".implode(' / ', $levels)."</legend>";
+	
+	print "\n\t<fieldset class='group'>\n\t\t<legend>".implode(' / ', $levels)."</legend>";
+	
+	if (isset($group['managedby'][0])) {
+		print "\n\t<div class='manager'>";
+		print "\n\t<h2>Group Manager: </h2>";
+		print dnToName($group['managedby'][0]);
+		
+		if ($showControls) {
+			print " <button class='change_manager'>Change</button>";
+			print "\n\t\t<form class='change_manager_form' action='".getUrl('change_manager')."' method='post' style='display: none'>";
+			print "\n\t\t<input type='hidden' name='group_id' value='".base64_encode($group['dn'])."'/>";
+			print "\n\t\t<input type='hidden' name='new_manager' value=''/>";
+			print "\n\t\t\t<input type='text' class='new_manager_search' size='50'/>";
+			print "\n\t\t<button class='set_new_manager_button'>Set As Manager</button>";
+			print "\n\t\t</form>";
+		}
+		print "\n\t</div>";
+	}
+	
+	print "\n\t<div class='members'>";
+	print "\n\t<h2>Group Members: </h2>";
 	print "\n\t\t<ul>";
-
 	if (isset($group['member']) && is_array($group['member'])) {
 		sort ($group['member']);
 		foreach ($group['member'] as $memberDN) {
@@ -118,11 +135,9 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 		print "\n\t\t<button class='delete_button'>Delete Group</button>";
 		print "\n\t\t</div>";
 	}
-
+	print "\n\t</div>";
+	
 	print "\n\t</fieldset>";
-
-
-	print "\n</div>";
 }
 
 /**

@@ -47,7 +47,7 @@ function addUser (groupId, userId, userName, list) {
 		success: function () {
 				var li = list.append("<li>" + userName + " <input type='hidden' class='group_id' value='" + groupId + "'/> <input type='hidden' class='member_id' value='" + userId + "'/> <button class='remove_button'>Remove</button> </li>");
 
-				setRemoveActions();
+				setMemberActions();
 			}
 		});
 	
@@ -75,9 +75,8 @@ function createGroup (groupName, containerDN,  containerElement) {
 		success: function (data, textStatus) {
 				containerElement.append(data);
 
-				setDeleteActions();
-				setRemoveActions();
-				setAddActions();
+				setGroupActions();
+				setMemberActions();
 			}
 		});
 
@@ -114,7 +113,9 @@ function deleteGroup (groupId, element) {
 /*********************************************************
  * Add our button actions via jQuery
  *********************************************************/
-function setRemoveActions() {
+
+function setMemberActions() {
+	// Onclick actions for the remove buttons
 	$(".group .members button.remove_button").click(function() {
 		removeUser(
 			$(this).siblings("input.group_id:first").attr('value'),
@@ -124,7 +125,7 @@ function setRemoveActions() {
 	});
 }
 
-function setAddActions() {
+function setGroupActions() {
 	// OnClick actions for the add buttons
 	$(".group .members button.add_button").click(function() {
 		addUser(
@@ -149,9 +150,7 @@ function setAddActions() {
 			$(this).attr('value', '');
 		}
 	});
-}
-
-function setDeleteActions() {
+	
 	// Set the delete-group actions
 	$(".group button.delete_button").click(function() {
 		deleteGroup(
@@ -159,18 +158,67 @@ function setDeleteActions() {
 			$(this).parents('.group')
 		);
 	});
+	
+	// Set the manager change actions
+	$(".group button.change_manager").click(function() {
+		if ($(this).text() == 'Change') {
+			$(this).text("Cancel");
+			$(this).siblings("form.change_manager_form").show('slow');
+		} else {
+			$(this).text("Change");
+			$(this).siblings("form.change_manager_form").hide('slow');
+		}
+	});
+	$(".group form.change_manager_form").submit(function() {
+		var groupElement = $(this).parents("fieldset.group:first");
+		
+		var newManager = $(this).children("input[name=new_manager]:first").attr('value');
+		if (!newManager.length) {
+			return false;
+		}
+		
+		if (confirm("Are you sure you wish to change the manager?\n\nYou will no longer be able to manage this group yourself.")) {
+			$.ajax({
+				type: "POST",
+				url: "index.php",
+				data: {
+					action: 'change_manager', 
+					group_id: $(this).children("input[name=group_id]:first").attr('value'), 
+					new_manager: newManager
+				},
+				error: function (request, textStatus, errorThrown) {
+						alert('An error has occurred, could not change the manager of the group.');
+					},
+				success: function (data, textStatus) {
+						groupElement.replaceWith(data);
+						
+						setGroupActions();
+						setMemberActions();
+					}
+				});
+		}
+		return false;
+	});
+	$(".group form.change_manager_form input.new_manager_search").autocomplete("index.php", {
+		width: 350,
+		selectFirst: false,
+		extraParams: {action: 'search'}
+	});
+	$(".group form.change_manager_form input.new_manager_search").result(function(event, data, formatted) {
+		console.log(data);
+		if (data) {
+			$(this).siblings("input[name=new_manager]:first").attr('value', data[1]);
+		}
+	});
 }
 
 $(document).ready(function() {
 
-	// OnClick actions for the remove buttons
-	setRemoveActions();
-
-	// OnClick actions for the add buttons
-	setAddActions();
+	// OnClick actions for the add and remove buttons
+	setMemberActions();
 
 	// Set the delete-group actions
-	setDeleteActions();
+	setGroupActions();
 
 	$("#create_group_form").submit(function() {
 		var name = $(this).find('#new_group_name');

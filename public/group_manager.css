@@ -1,49 +1,33 @@
-.group {
+fieldset.group  {
 	clear: both;
-}
-
-.group fieldset {
 	margin-top: 20px;
+	width: 500px;
 }
 
-.group legend {
+fieldset.group legend {
 	font-weight: bold;
 	font-size: larger;
 }
 
-.group h2 {
+fieldset.group h2 {
 	margin-top: 0px;
-	padding-top: 10px;
+	padding-top: 0px;
 	margin-bottom: 0px;
+	font-size: 110%;
 }
 
-.group .location ul {
-	margin-top: 0px;
-	margin-bottom: 5px;
-	margin-left: 0px;
-	padding-left: 15px;
+fieldset.group div.manager {
+	margin-bottom: 10px;
 }
 
-.group .location li {
-	list-style-type: circle;
-}
-
-.group .members ul {
+fieldset.group .members ul {
 	padding: 0px;
+	margin-top: 0px;
 }
-.group .members li {
+fieldset.group .members li {
 	list-style-type: none;
 }
 
-.group fieldset.location {
-	width: 250px;
-	float: left;
-}
-
-.group fieldset.members {
-	width: 450px;
-}
-
-.group div.delete_controls {
+fieldset.group div.delete_controls {
 	margin-top: 10px;
 }
