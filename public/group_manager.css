@@ -1,0 +1,45 @@
+.group {
+	clear: both;
+}
+
+.group fieldset {
+	margin-top: 20px;
+}
+
+.group legend {
+	font-weight: bold;
+	font-size: larger;
+}
+
+.group h2 {
+	margin-top: 0px;
+	padding-top: 10px;
+	margin-bottom: 0px;
+}
+
+.group .location ul {
+	margin-top: 0px;
+	margin-bottom: 5px;
+	margin-left: 0px;
+	padding-left: 15px;
+}
+
+.group .location li {
+	list-style-type: circle;
+}
+
+.group .members ul {
+	padding: 0px;
+}
+.group .members li {
+	list-style-type: none;
+}
+
+.group fieldset.location {
+	width: 250px;
+	float: left;
+}
+
+.group fieldset.members {
+	width: 450px;
+}

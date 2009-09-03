@@ -1,0 +1,20 @@
+<?php
+
+// Configure the first LDAP Server.
+$ldapConfig = array();
+$ldapConfig['LDAPHost']				= 'ad.middlebury.edu';
+$ldapConfig['LDAPPort']				= 389;
+$ldapConfig['BindDN']				= 'binduser';
+$ldapConfig['BindDNPassword']		= 'bindpassword';
+$ldapConfig['BaseDN']				= 'DC=middlebury,DC=edu';
+$ldapConfig['UserBaseDN']			= 'DC=middlebury,DC=edu';
+$ldapConfig['GroupBaseDN']			= 'OU=Groups,DC=middlebury,DC=edu';
+$ldapConfig['WritableGroupContainers'] 		= array(
+											'OU=MIDD,OU=web data,DC=middlebury,DC=edu',
+											'OU=MIIS,OU=web data,DC=middlebury,DC=edu',
+											);
+
+
+define('DISPLAY_ERROR_BACKTRACE', false);
+define('SHOW_TIMERS', true);
+define('SHOW_TIMERS_IN_OUTPUT', false);
