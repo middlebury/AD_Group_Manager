@@ -12,14 +12,14 @@
 if (!isset($_POST['group_id']) || !$_POST['group_id'])
 	throw new InvalidArgumentException("No group_id passed");
 
-$groupId = base64_decode($_POST['group_id'], true);
+$groupId = base64_decode_fix($_POST['group_id'], true);
 if (!$groupId)
 	throw new InvalidArgumentException("Invalid group_id passed");
 	
 if (!isset($_POST['user_id']) || !$_POST['user_id'])
 	throw new InvalidArgumentException("No user_id passed");
 
-$userId = base64_decode($_POST['user_id'], true);
+$userId = base64_decode_fix($_POST['user_id'], true);
 if (!$userId)
 	throw new InvalidArgumentException("Invalid user_id passed");
 

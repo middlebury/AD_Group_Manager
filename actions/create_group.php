@@ -12,7 +12,7 @@
 if (!isset($_POST['container_dn']) || !$_POST['container_dn'])
 	throw new InvalidArgumentException("No container_dn passed");
 
-$containerDn = base64_decode($_POST['container_dn'], true);
+$containerDn = base64_decode_fix($_POST['container_dn'], true);
 if (!$containerDn)
 	throw new InvalidArgumentException("Invalid container_dn passed");
 

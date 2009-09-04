@@ -230,3 +230,22 @@ function notify ($groupDN) {
 		curl_close($ch);
 	}
 }
+
+/**
+ * workaround for bug in php 4.3.11 through 4.4.7, 5.1.2 through 5.2.4
+ * 
+ * Function by zmorris at zsculpt dot com
+ * http://us.php.net/manual/en/function.base64-decode.php#79098
+ * 
+ * @param string $data
+ * @param boolean $strict
+ * @return string
+ */
+function base64_decode_fix($data, $strict = false) {
+	if ($strict) {
+		if (preg_match( '![^a-zA-Z0-9/+=]!', $data))
+			return false;	
+	}
+	return base64_decode($data);
+}
+

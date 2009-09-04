@@ -2,7 +2,7 @@
 
 <?php
 if (isset($_GET['current']) && $_GET['current'])
-	$current = base64_decode($_GET['current'], true);
+	$current = base64_decode_fix($_GET['current'], true);
 
 if (!isset($current) || ! $current)
 	$current = $ldapConfig['BaseDN'];

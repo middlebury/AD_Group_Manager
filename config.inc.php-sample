@@ -21,6 +21,8 @@ $ldapConfig['WritableGroupContainers'] 		= array(
 											'OU=MIDD,OU=web data,DC=middlebury,DC=edu',
 											'OU=MIIS,OU=web data,DC=middlebury,DC=edu',
 											);
+// This is that attribute in LDAP that maps to the the CAS user id.
+$ldapConfig['UserIdAttribute']		= 'middleburyCollegeUID';
 
 global $notifyConfig;
 $notifyConfig = array(
