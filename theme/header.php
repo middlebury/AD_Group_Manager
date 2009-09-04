@@ -53,6 +53,9 @@
 							<li class="AspNet-Menu-Leaf <?php if ($action == 'list_all') { echo 'AspNet-Menu-Selected'; } ?>">
 								<a href="<?php echo getUrl('list_all'); ?>" class="AspNet-Menu-Link">All Groups</a>
 							</li>
+							<li class="AspNet-Menu-Leaf">
+								<a href="https://mediawiki.middlebury.edu/wiki/LIS/AD_Group_Manager" target="_blank" class="AspNet-Menu-Link">Help</a>
+							</li>
 						</ul>
 					</div>
 				</div>
