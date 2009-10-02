@@ -205,7 +205,7 @@ function setGroupActions() {
 		extraParams: {action: 'search'}
 	});
 	$(".group form.change_manager_form input.new_manager_search").result(function(event, data, formatted) {
-		console.log(data);
+//		console.log(data);
 		if (data) {
 			$(this).siblings("input[name=new_manager]:first").attr('value', data[1]);
 		}
