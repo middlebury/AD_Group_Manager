@@ -80,28 +80,29 @@ function dnToName ($dn) {
  * @since 8/31/09
  */
 function printGroupHtml (LdapConnector $ldap, array $group) {
-	$showControls = ($group['managedby'][0] == $_SESSION['user_dn']);
+	$showControls = (!empty($group['managedby'][0]) && $group['managedby'][0] == $_SESSION['user_dn']);
 
 	$levels = dnToLevels($group['dn']);
 	
 	print "\n\t<fieldset class='group'>\n\t\t<legend>".implode(' / ', $levels)."</legend>";
 	
+	print "\n\t<div class='manager'>";
+	print "\n\t<h2>Group Manager: </h2>";
 	if (isset($group['managedby'][0])) {
-		print "\n\t<div class='manager'>";
-		print "\n\t<h2>Group Manager: </h2>";
 		print dnToName($group['managedby'][0]);
-		
-		if ($showControls) {
-			print " <button class='change_manager'>Change</button>";
-			print "\n\t\t<form class='change_manager_form' action='".getUrl('change_manager')."' method='post' style='display: none'>";
-			print "\n\t\t<input type='hidden' name='group_id' value='".base64_encode($group['dn'])."'/>";
-			print "\n\t\t<input type='hidden' name='new_manager' value=''/>";
-			print "\n\t\t\t<input type='text' class='new_manager_search' size='50'/>";
-			print "\n\t\t<input type='submit' class='set_new_manager_button' value='Set As Manager'/>";
-			print "\n\t\t</form>";
-		}
-		print "\n\t</div>";
+	} else {
+		print "<em>No manager set</em>";
 	}
+	if ($showControls) {
+		print " <button class='change_manager'>Change</button>";
+		print "\n\t\t<form class='change_manager_form' action='".getUrl('change_manager')."' method='post' style='display: none'>";
+		print "\n\t\t<input type='hidden' name='group_id' value='".base64_encode($group['dn'])."'/>";
+		print "\n\t\t<input type='hidden' name='new_manager' value=''/>";
+		print "\n\t\t\t<input type='text' class='new_manager_search' size='50'/>";
+		print "\n\t\t<input type='submit' class='set_new_manager_button' value='Set As Manager'/>";
+		print "\n\t\t</form>";
+	}
+	print "\n\t</div>";
 	
 	print "\n\t<div class='members'>";
 	print "\n\t<h2>Group Members: </h2>";
