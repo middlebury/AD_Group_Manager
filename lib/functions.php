@@ -97,7 +97,7 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 			print "\n\t\t<input type='hidden' name='group_id' value='".base64_encode($group['dn'])."'/>";
 			print "\n\t\t<input type='hidden' name='new_manager' value=''/>";
 			print "\n\t\t\t<input type='text' class='new_manager_search' size='50'/>";
-			print "\n\t\t<button class='set_new_manager_button'>Set As Manager</button>";
+			print "\n\t\t<input type='submit' class='set_new_manager_button' value='Set As Manager'/>";
 			print "\n\t\t</form>";
 		}
 		print "\n\t</div>";
