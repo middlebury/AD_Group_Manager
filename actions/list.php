@@ -9,7 +9,9 @@ foreach ($ldapConfig['WritableGroupContainers'] as $baseDN) {
 
 // Filter on ones managed by the current user
 foreach ($groups as $key => $group) {
-	if ($group['managedby'][0] != $_SESSION['user_dn'])
+	if (empty($group['managedby']))
+		unset($groups[$key]);
+	else if ($group['managedby'][0] != $_SESSION['user_dn'])
 		unset($groups[$key]);
 }
 $groups = array_values($groups);
