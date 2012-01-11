@@ -185,6 +185,7 @@ function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "
 					print $tabs."</ul>";
 				}
 				print $tabs."<ul class='members'>";
+				sort($groups[0]['member']);
 				foreach ($groups[0]['member'] as $member) {
 					print $tabs."\t<li>".dnToName($member)."</li>";
 				}
