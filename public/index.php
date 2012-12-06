@@ -60,6 +60,36 @@ $ldap = new LdapConnector($ldapConfig);
 $ldap->connect();
 
 try {
+	// Check authorization
+	if (!empty($authorizedUserAttributes)) {
+		if (!is_array($authorizedUserAttributes))
+			throw new Exception('Configuration Error: $authorizedUserAttributes must be an array');
+		$isAuthorized = false;
+		$attributes = phpCAS::getAttributes();
+		foreach ($authorizedUserAttributes as $attr => $authorized_values) {
+			if (!is_array($authorized_values))
+				$authorized_values = array($authorized_values);
+			foreach ($authorized_values as $authorized_value) {
+				if (!empty($attributes[$attr])) {
+					if (is_array($attributes[$attr])) {
+						if (in_array($authorized_value, $attributes[$attr])) {
+							$isAuthorized = true;
+							break;
+							break;
+						}
+					} else if ($attributes[$attr] == $authorized_value) {
+						$isAuthorized = true;
+						break;
+						break;
+					}
+				}
+			}
+		}
+		
+		if (!$isAuthorized)
+			throw new PermissionDeniedException("You are not authorized to use this application.");
+	}
+
 	// Parse/validate our arguments and run the specified action.
 	if (isset($_REQUEST['action'])) {
 		if (preg_match('/^[a-z0-9_-]+$/i', $_REQUEST['action']))
