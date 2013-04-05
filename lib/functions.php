@@ -110,10 +110,10 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 	if (isset($group['member']) && is_array($group['member'])) {
 		sort ($group['member']);
 		foreach ($group['member'] as $memberDN) {
-			$members = $ldap->read('(objectclass=*)', $memberDN, array('givenName', 'sn', 'mail'));
+			$members = $ldap->read('(objectclass=*)', $memberDN, array('givenName', 'sn', 'mail', 'cn', 'objectclass'));
 			$member = $members[0];
-
-			print "\n\t\t<li>".$member['givenname'][0]." ".$member['sn'][0]." (".$member['mail'][0].") ";
+			
+			print "\n\t\t<li>".result_to_name($member);
 			if ($showControls) {
 				print "\n\t\t\t<input type='hidden' class='group_id' value='".base64_encode($group['dn'])."'/>";
 				print "\n\t\t\t<input type='hidden' class='member_id' value='".base64_encode($memberDN)."'/>";
@@ -139,6 +139,28 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 	print "\n\t</div>";
 	
 	print "\n\t</fieldset>";
+}
+
+/**
+ * Answer a name from an Ldap user/group entry
+ * 
+ * @param array $entry
+ * @return string
+ */
+function result_to_name ($entry) {
+	$name = '';
+	if (!empty($entry['givenname'][0]) &&  !empty($entry['sn'][0])) {
+		$name = $entry['givenname'][0]." ".$entry['sn'][0];
+	} else {
+		$name = $entry['cn'][0];
+	}
+	if (!empty($entry['mail'][0])) {
+		$name .= " (".$entry['mail'][0].") ";
+	}
+	if (!empty($entry['objectclass']) && in_array('group', $entry['objectclass'])) {
+		$name .= " (group) ";
+	}
+	return $name;
 }
 
 /**
