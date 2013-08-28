@@ -36,7 +36,7 @@ try {
 $entry['cn'][0] = $newGroupName;
 $entry['objectclass'][0] = 'top';
 $entry['objectclass'][1] = 'group';
-$entry['grouptype']="2";
+$entry['grouptype']="-2147483640";
 $entry['managedby'][0] = $_SESSION['user_dn'];
 // $entry["sAMAccountName"] = $newGroupName;
 
