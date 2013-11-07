@@ -28,6 +28,8 @@ define("MYPATH", $protocol."://".$_SERVER['HTTP_HOST'].str_replace(
 define("MYURL", trim(MYPATH, '/')."/".basename($scriptPath));
 define("MYDIR", realpath(dirname(__FILE__)."/.."));
 
+global $notifyConfig;
+
 require_once(MYDIR.'/config.inc.php');
 require_once(MYDIR.'/lib/HarmoniException.class.php');
 require_once(MYDIR.'/lib/ErrorPrinter.class.php');

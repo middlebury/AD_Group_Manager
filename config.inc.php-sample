@@ -32,7 +32,7 @@ $ldapConfig['WritableGroupContainers'] 		= array(
 // This is that attribute in LDAP that maps to the the CAS user id.
 $ldapConfig['UserIdAttribute']		= 'middleburyCollegeUID';
 
-global $notifyConfig;
+// What web-service calls to notify when groups are changed.
 $notifyConfig = array(
 	array(	'URL'			=> 'http://chisel.middlebury.edu/~afranco/directory/',
 			'Type'			=> 'POST',
