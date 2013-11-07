@@ -17,8 +17,12 @@ function removeUser (groupId, userId, element) {
 		url: "index.php",
 		data: {action: 'remove_member', group_id: groupId, user_id: userId},
 		error: function (request, textStatus, errorThrown) {
-				element.css('display', 'block');
-				alert('An error has occurred, could not remove user.');
+				if (request.status == 506) {
+					element.hide("slow");
+				} else {
+					element.css('display', 'block');
+					alert('An error has occurred, could not remove user.');
+				}
 			}
 		});
 	

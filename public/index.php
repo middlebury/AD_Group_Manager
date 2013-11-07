@@ -145,5 +145,12 @@ try {
 }
 // Default 
 catch (Exception $e) {
-	ErrorPrinter::handleException($e, 500);
+	// Allow actions to specify unused HTTP codes in their response
+	if (($e->getCode() > 417 && $e->getCode() < 500)
+		|| ($e->getCode() > 505 && $e->getCode() < 600))
+	{
+		ErrorPrinter::handleException($e, $e->getCode());
+	} else {
+		ErrorPrinter::handleException($e, 500);
+	}
 }
