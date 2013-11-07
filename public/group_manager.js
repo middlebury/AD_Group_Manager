@@ -19,7 +19,9 @@ function removeUser (groupId, userId, element) {
 		data: {action: 'remove_member', group_id: groupId, user_id: userId},
 		error: function (request, textStatus, errorThrown) {
 				if (request.status == 506) {
-					element.hide("slow");
+					element.hide("slow", function () {
+						element.remove();
+					});
 				} else {
 					element.css('display', 'block');
 					alert('An error has occurred, could not remove user.');
@@ -27,7 +29,9 @@ function removeUser (groupId, userId, element) {
 			}
 		});
 	
-	element.hide("slow");
+	element.hide("slow", function () {
+		element.remove();
+	});
 	return true;
 }
 
