@@ -28,6 +28,7 @@ define("MYPATH", $protocol."://".$_SERVER['HTTP_HOST'].str_replace(
 define("MYURL", trim(MYPATH, '/')."/".basename($scriptPath));
 define("MYDIR", realpath(dirname(__FILE__)."/.."));
 
+global $notify_queue_dsn, $notify_queue_user, $notify_queue_pass, $notify_queue_options;
 global $notifyConfig;
 
 require_once(MYDIR.'/config.inc.php');
