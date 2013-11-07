@@ -228,9 +228,76 @@ function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "
  * @since 9/1/09
  */
 function notify ($groupDN) {
-	global $notifyConfig;
+	$db = get_queue_db();
+	$now = date('c');
+	$stmt = $db->prepare('INSERT INTO notification_queue (queue_time, group_dn) VALUES (?, ?);');
+	$stmt->execute(array($now, $groupDN));
+}
 
+/**
+ * Check the notification queue and send any notifications needed.
+ * 
+ * @return void
+ */
+function check_notification_queue () {
+	global $notify_queue_delay;
+	$notify_queue_delay = intval($notify_queue_delay);
+	if ($notify_queue_delay < 1)
+		$notify_queue_delay = 3;
+	
+	$db = get_queue_db();
+	$cutoff = date('c', time() - $notify_queue_delay);
+	$stmt = $db->prepare('SELECT group_dn FROM notification_queue WHERE queue_time < ?;');
+	$stmt->execute(array($cutoff));
+	$groups = $stmt->fetchAll(PDO::FETCH_COLUMN);
+	if (count($groups)) {
+		$stmt = $db->prepare('DELETE FROM notification_queue WHERE queue_time < ?;');
+		$stmt->execute(array($cutoff));
+	}
+	
+	$groups = array_unique($groups); // Ony send a single notification for each group.
+	foreach ($groups as $group) {
+		send_notification_for_group($group);
+	}
+}
+
+/**
+ * Get the PDO connection for an initialized queue database
+ * 
+ * @return PDO
+ */
+function get_queue_db () {
+	static $db;
+	global $notify_queue_dsn, $notify_queue_user, $notify_queue_pass, $notify_queue_options;
+	if (!isset($db)) {
+		$db = new PDO($notify_queue_dsn, $notify_queue_user, $notify_queue_pass, $notify_queue_options);
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		
+		// Ensure that our queue table exists.
+		$db->query('CREATE TABLE IF NOT EXISTS notification_queue (
+	queue_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	group_dn VARCHAR(255) NOT NULL
+);');
+	}
+	
+	if (empty($db))
+		throw new Exception('Queue database is unavailable.');
+	
+	return $db;
+}
+
+/**
+ * Send a notification for a group change to all listeners.
+ * 
+ * @param string $groupDN The group DN that was changed
+ * @return void
+ */
+function send_notification_for_group ($groupDN) {
+	global $notifyConfig;
+	
+	print "Notifying that $groupDN has changed:\n";
 	foreach ($notifyConfig as $config) {
+		print "\tNotifying ".$config['URL']."\n";
 		$data = array($config['GroupParam'] => $groupDN);
 		$data = array_merge($data, $config['OtherParams']);
 
