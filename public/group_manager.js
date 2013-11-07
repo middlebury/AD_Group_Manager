@@ -12,6 +12,7 @@ function removeUser (groupId, userId, element) {
 	if (!confirm("Are you sure that you wish to remove this user from the group?"))
 		return false;
 	
+	element.children("button.remove_button").unbind();
 	$.ajax({
 		type: "POST",
 		url: "index.php",
