@@ -1,5 +1,7 @@
 <?php
 
+define('CDN_BASE', '//cdn.domain.edu/middlebury.edu/2005/2d');
+
 // CAS Login Info
 define('CAS_HOST', 'login.middlebury.edu');
 define('CAS_PORT', 443);
