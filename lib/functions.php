@@ -72,6 +72,20 @@ function dnToName ($dn) {
 }
 
 /**
+ * Answer true if the current user should be able modify a group.
+ *
+ * @param array $group The group result from an LDAP search.
+ * @return void
+ * @since 2/2/2016
+ */
+function canModifyGroup (array $group) {
+	if (isset($GLOBALS['is_super_admin']) && $GLOBALS['is_super_admin'] === true) {
+		return true;
+	}
+	return (!empty($group['managedby'][0]) && $group['managedby'][0] == $_SESSION['user_dn']);
+}
+
+/**
  * Print an HTML block for a group, respecting permissions.
  *
  * @param LdapConnector $ldap
@@ -80,7 +94,7 @@ function dnToName ($dn) {
  * @since 8/31/09
  */
 function printGroupHtml (LdapConnector $ldap, array $group) {
-	$showControls = (!empty($group['managedby'][0]) && $group['managedby'][0] == $_SESSION['user_dn']);
+	$showControls = canModifyGroup($group);
 
 	$levels = dnToLevels($group['dn']);
 

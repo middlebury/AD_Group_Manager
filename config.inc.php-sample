@@ -18,6 +18,16 @@ define('CAS_PATH', '/cas');
 // 	'MemberOf' => 'CN=institution,OU=General,OU=Groups,DC=middlebury,DC=edu',
 // );
 
+// Define a list of attributes which if any are matched, will grant the user super-admin
+// access to the application.
+// Values can be either a single string or an array of strings. If an array, each value
+// will be checked separately.
+// $superAdminUserAttributes = array(
+// 	'MemberOf' => array(
+// 		'CN=ITS Web Applications,OU=General,OU=Groups,DC=middlebury,DC=edu',
+// 	),
+// );
+
 // Configure the first LDAP Server.
 $ldapConfig = array();
 $ldapConfig['LDAPHost']				= 'ad.middlebury.edu';

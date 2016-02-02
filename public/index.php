@@ -91,6 +91,34 @@ try {
 
 		if (!$isAuthorized)
 			throw new PermissionDeniedException("You are not authorized to use this application.");
+
+		// Check for super-admin access
+		$GLOBALS['is_super_admin'] = false;
+		if (!empty($superAdminUserAttributes)) {
+			if (!is_array($superAdminUserAttributes))
+				throw new Exception('Configuration Error: $superAdminUserAttributes must be an array');
+			$isAuthorized = false;
+			$attributes = phpCAS::getAttributes();
+			foreach ($superAdminUserAttributes as $attr => $authorized_values) {
+				if (!is_array($authorized_values))
+					$authorized_values = array($authorized_values);
+				foreach ($authorized_values as $authorized_value) {
+					if (!empty($attributes[$attr])) {
+						if (is_array($attributes[$attr])) {
+							if (in_array($authorized_value, $attributes[$attr])) {
+								$GLOBALS['is_super_admin'] = true;
+								break;
+								break;
+							}
+						} else if ($attributes[$attr] == $authorized_value) {
+							$GLOBALS['is_super_admin'] = true;
+							break;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	// Parse/validate our arguments and run the specified action.
