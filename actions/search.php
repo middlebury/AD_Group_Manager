@@ -3,11 +3,11 @@
  * Search for users or groups.
  *
  * @since 8/28/09
- * @package 
- * 
+ * @package
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 while(ob_get_level())
 	ob_end_clean();
@@ -15,7 +15,7 @@ while(ob_get_level())
 header('Content-Type: text/plain');
 
 $q = strtolower($_GET["q"]);
-if (!$q) 
+if (!$q)
 	exit;
 if (!preg_match('/^[\w@.\'_-\s]+$/i', $q))
 	exit;
@@ -44,11 +44,11 @@ foreach ($results as $entry) {
 			print $entry['cn'][0];
 		else
 			continue;
-		
+
 		if (isset($entry['mail'][0]))
 			print " (".$entry['mail'][0].")";
 	}
-	
+
 	print "|".base64_encode($entry['dn'])."\n";
 }
 

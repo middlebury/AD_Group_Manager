@@ -38,11 +38,11 @@ $ldapConfig['UserIdAttribute']		= 'middleburyCollegeUID';
 // This database can be local or remote and does not need to be shared
 // between clustered group manager instances as long as each database
 // has the notify.php script run against it periodically.
-// 
+//
 // The notify.php script should be run several times per minute to ensure that
 // listeners are updated in a timely manner. This can be done with cron entries
 // like the following:
-// 
+//
 // 	* * * * * sudo -u apache php /path/to/group/manager/notify.php
 // 	* * * * * sleep 15; sudo -u apache php /path/to/group/manager/notify.php
 // 	* * * * * sleep 30; sudo -u apache php /path/to/group/manager/notify.php

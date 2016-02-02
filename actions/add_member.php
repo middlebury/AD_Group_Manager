@@ -1,13 +1,13 @@
 <?php
 /**
  * Add a new user to a group.
- * 
+ *
  * @since 8/28/09
- * @package 
- * 
+ * @package
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 if (!isset($_POST['group_id']) || !$_POST['group_id'])
 	throw new InvalidArgumentException("No group_id passed");
@@ -15,7 +15,7 @@ if (!isset($_POST['group_id']) || !$_POST['group_id'])
 $groupId = base64_decode_fix($_POST['group_id'], true);
 if (!$groupId)
 	throw new InvalidArgumentException("Invalid group_id passed");
-	
+
 if (!isset($_POST['user_id']) || !$_POST['user_id'])
 	throw new InvalidArgumentException("No user_id passed");
 

@@ -5,10 +5,10 @@
  *
  * @since 8/27/09
  * @package group_manager
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 $name = preg_replace('/[^a-z0-9_-]/i', '', dirname($_SERVER['SCRIPT_NAME']));
 session_name($name);
@@ -23,7 +23,7 @@ if ($_SERVER['SCRIPT_NAME'])
 else
 	$scriptPath = $_SERVER['PHP_SELF'];
 define("MYPATH", $protocol."://".$_SERVER['HTTP_HOST'].str_replace(
-												"\\", "/", 
+												"\\", "/",
 												dirname($scriptPath)));
 define("MYURL", trim(MYPATH, '/')."/".basename($scriptPath));
 define("MYDIR", realpath(dirname(__FILE__)."/.."));
@@ -88,7 +88,7 @@ try {
 				}
 			}
 		}
-		
+
 		if (!$isAuthorized)
 			throw new PermissionDeniedException("You are not authorized to use this application.");
 	}
@@ -102,11 +102,11 @@ try {
 	} else {
 		$action = 'list';
 	}
-	
+
 	if ($action == 'logout') {
 		phpCAS::logout();
 	}
-	
+
 	// Try to load the user's DN from the LDAP server. If they are not in
 	// LDAP (such as guests) then they cannot use this application.
 	if (!isset($_SESSION['user_dn']) || !strlen($_SESSION['user_dn'])) {
@@ -116,19 +116,19 @@ try {
 			throw new PermissionDeniedException("We could not find your account on the LDAP server. You are not authorized to create groups.");
 		}
 	}
-	
+
 	ob_start();
 	if (file_exists(MYDIR.'/actions/'.$action.'.php'))
 		require_once(MYDIR.'/actions/'.$action.'.php');
 	else
 		throw new UnknownActionException("Unknown action, $action.");
 	$content = ob_get_clean();
-	
+
 	// Print out the content
 	require_once(MYDIR.'/theme/header.php');
 	print $content;
 	require_once(MYDIR.'/theme/footer.php');
-	
+
 // Handle certain types of uncaught exceptions specially. In particular,
 // Send back HTTP Headers indicating that an error has ocurred to help prevent
 // crawlers from continuing to pound invalid urls.
@@ -143,7 +143,7 @@ try {
 } catch (UnknownIdException $e) {
 	ErrorPrinter::handleException($e, 404);
 }
-// Default 
+// Default
 catch (Exception $e) {
 	// Allow actions to specify unused HTTP codes in their response
 	if (($e->getCode() > 417 && $e->getCode() < 500)

@@ -4,10 +4,10 @@
  *
  *
  * @package group_manager
- * 
+ *
  * @copyright Copyright &copy; 2013, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 define("MYDIR", realpath(dirname(__FILE__)));
 
@@ -30,7 +30,7 @@ if (!defined('DISPLAY_ERROR_BACKTRACE'))
 try {
 
 	require_once(MYDIR.'/actions/notify.php');
-	
+
 // Handle certain types of uncaught exceptions specially. In particular,
 // Send back HTTP Headers indicating that an error has ocurred to help prevent
 // crawlers from continuing to pound invalid urls.
@@ -45,7 +45,7 @@ try {
 } catch (UnknownIdException $e) {
 	ErrorPrinter::handleException($e, 404);
 }
-// Default 
+// Default
 catch (Exception $e) {
 	ErrorPrinter::handleException($e, 500);
 }

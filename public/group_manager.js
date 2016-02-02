@@ -1,6 +1,6 @@
 /**
  * Remove a user from a group.
- * 
+ *
  * @param string groupId
  * @param string userId
  * @param jQuery element The element to hide when removing.
@@ -11,7 +11,7 @@
 function removeUser (groupId, userId, element) {
 	if (!confirm("Are you sure that you wish to remove this user from the group?"))
 		return false;
-	
+
 	element.children("button.remove_button").unbind();
 	$.ajax({
 		type: "POST",
@@ -28,7 +28,7 @@ function removeUser (groupId, userId, element) {
 				}
 			}
 		});
-	
+
 	element.hide("slow", function () {
 		element.remove();
 	});
@@ -37,7 +37,7 @@ function removeUser (groupId, userId, element) {
 
 /**
  * Add a user to a group.
- * 
+ *
  * @param string groupId
  * @param string userId
  * @param jQuery list A list to add the new user to.
@@ -59,7 +59,7 @@ function addUser (groupId, userId, userName, list) {
 				setMemberActions();
 			}
 		});
-	
+
 	return true;
 }
 
@@ -159,7 +159,7 @@ function setGroupActions() {
 			$(this).attr('value', '');
 		}
 	});
-	
+
 	// Set the delete-group actions
 	$(".group button.delete_button").click(function() {
 		deleteGroup(
@@ -167,7 +167,7 @@ function setGroupActions() {
 			$(this).parents('.group')
 		);
 	});
-	
+
 	// Set the manager change actions
 	$(".group button.change_manager").click(function() {
 		if ($(this).text() == 'Change') {
@@ -180,19 +180,19 @@ function setGroupActions() {
 	});
 	$(".group form.change_manager_form").submit(function() {
 		var groupElement = $(this).parents("fieldset.group:first");
-		
+
 		var newManager = $(this).children("input[name=new_manager]:first").attr('value');
 		if (!newManager.length) {
 			return false;
 		}
-		
+
 		if (confirm("Are you sure you wish to change the manager?\n\nYou will no longer be able to manage this group yourself.")) {
 			$.ajax({
 				type: "POST",
 				url: "index.php",
 				data: {
-					action: 'change_manager', 
-					group_id: $(this).children("input[name=group_id]:first").attr('value'), 
+					action: 'change_manager',
+					group_id: $(this).children("input[name=group_id]:first").attr('value'),
 					new_manager: newManager
 				},
 				error: function (request, textStatus, errorThrown) {
@@ -200,7 +200,7 @@ function setGroupActions() {
 					},
 				success: function (data, textStatus) {
 						groupElement.replaceWith(data);
-						
+
 						setGroupActions();
 						setMemberActions();
 					}
@@ -244,5 +244,5 @@ $(document).ready(function() {
 
 		return false;
 	});
-	
+
 });
