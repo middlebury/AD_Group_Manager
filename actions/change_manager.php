@@ -29,7 +29,9 @@ if (!canModifyGroup($group))
 	throw new PermissionDeniedException("You are not authorized to manage this group.");
 
 // Delete the group
-$ldap->delAttribute($groupId, 'managedby', $group['managedby'][0]);
+if (!empty($group['managedby'][0])) {
+	$ldap->delAttribute($groupId, 'managedby', $group['managedby'][0]);
+}
 $ldap->addAttribute($groupId, 'managedby', $userId);
 
 // Print out its HTML for insertion into the document
