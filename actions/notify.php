@@ -10,5 +10,4 @@
 
 check_notification_queue();
 
-print "Success\n";
 exit;
