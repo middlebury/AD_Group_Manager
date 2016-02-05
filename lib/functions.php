@@ -309,9 +309,9 @@ function get_queue_db () {
 function send_notification_for_group ($groupDN) {
 	global $notifyConfig;
 
-	print "Notifying that $groupDN has changed:\n";
+	print date('c')." Notifying that $groupDN has changed:\n";
 	foreach ($notifyConfig as $config) {
-		print "\tNotifying ".$config['URL']."\n";
+		print date('c')." \tNotifying ".$config['URL']."\n";
 		$data = array($config['GroupParam'] => $groupDN);
 		$data = array_merge($data, $config['OtherParams']);
 
