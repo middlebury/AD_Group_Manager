@@ -71,7 +71,9 @@ $notifyConfig = array(
 			'GroupParam'	=> 'group_id',
 			'OtherParams'	=> array(
 				'action'		=> 'clear_cache',
-				'ADMIN_ACCESS'	=> 'sdfj239ug2jasdgae01jLKJ',
+			),
+			'HttpHeaders' => array(
+				'ADMIN_ACCESS: abc1234567890',
 			),
 	),
 	array(	'URL'			=> 'http://chisel.middlebury.edu/~afranco/drupal/',

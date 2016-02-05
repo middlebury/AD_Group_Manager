@@ -328,6 +328,10 @@ function send_notification_for_group ($groupDN) {
 			curl_setopt($ch, CURLOPT_URL, $config['URL'].'?'.http_build_query($data));
 		}
 
+		if (!empty($config['HttpHeaders']) && is_array($config['HttpHeaders'])) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $config['HttpHeaders']);
+		}
+
 		$result = curl_exec($ch);
 		print $result."\n";
 		if ($result === FALSE || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
