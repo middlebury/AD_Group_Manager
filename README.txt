@@ -1,4 +1,4 @@
-Copyright &copy; 2009, Middlebury College
+Copyright &copy; 2009-2016, Middlebury College
 License: http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
 
 Author: 	Adam Franco
@@ -20,5 +20,12 @@ For code releases, see:
 
 
 == Change-Log ==
+0.2.0
+ - Updated phpCAS from 1.2.2 to 1.3.4
+ - New super-admin role
+ - Web-service notifications now happen asynchronously via cron.
+ - Improved display of sub-groups.
+ - Alphabetical sorting of group members.
+ - Fixed PHP notices.
 0.1.0
 	- First release.

@@ -1,5 +1,7 @@
 <?php
 
+define('CDN_BASE', '//cdn.domain.edu/middlebury.edu/2005/2d');
+
 // CAS Login Info
 define('CAS_HOST', 'login.middlebury.edu');
 define('CAS_PORT', 443);
@@ -14,6 +16,16 @@ define('CAS_PATH', '/cas');
 // will be checked separately.
 // $authorizedUserAttributes = array(
 // 	'MemberOf' => 'CN=institution,OU=General,OU=Groups,DC=middlebury,DC=edu',
+// );
+
+// Define a list of attributes which if any are matched, will grant the user super-admin
+// access to the application.
+// Values can be either a single string or an array of strings. If an array, each value
+// will be checked separately.
+// $superAdminUserAttributes = array(
+// 	'MemberOf' => array(
+// 		'CN=ITS Web Applications,OU=General,OU=Groups,DC=middlebury,DC=edu',
+// 	),
 // );
 
 // Configure the first LDAP Server.
@@ -32,14 +44,36 @@ $ldapConfig['WritableGroupContainers'] 		= array(
 // This is that attribute in LDAP that maps to the the CAS user id.
 $ldapConfig['UserIdAttribute']		= 'middleburyCollegeUID';
 
-global $notifyConfig;
+// Database PDO connection info for the notification queue.
+// This database can be local or remote and does not need to be shared
+// between clustered group manager instances as long as each database
+// has the notify.php script run against it periodically.
+//
+// The notify.php script should be run several times per minute to ensure that
+// listeners are updated in a timely manner. This can be done with cron entries
+// like the following:
+//
+// 	* * * * * sudo -u apache php /path/to/group/manager/notify.php
+// 	* * * * * sleep 15; sudo -u apache php /path/to/group/manager/notify.php
+// 	* * * * * sleep 30; sudo -u apache php /path/to/group/manager/notify.php
+// 	* * * * * sleep 45; sudo -u apache php /path/to/group/manager/notify.php
+$notify_queue_dsn 		= 'sqlite:/tmp/group_manager_queue.sq3';
+$notify_queue_user		= null;
+$notify_queue_pass		= null;
+$notify_queue_options	= array();
+// How long should we wait for group changes to propagte before firing notifications? (Seconds)
+$notify_queue_delay		= 15;
+
+// What web-service calls to notify when groups are changed.
 $notifyConfig = array(
 	array(	'URL'			=> 'http://chisel.middlebury.edu/~afranco/directory/',
 			'Type'			=> 'POST',
 			'GroupParam'	=> 'group_id',
 			'OtherParams'	=> array(
 				'action'		=> 'clear_cache',
-				'ADMIN_ACCESS'	=> 'sdfj239ug2jasdgae01jLKJ',
+			),
+			'HttpHeaders' => array(
+				'ADMIN_ACCESS: abc1234567890',
 			),
 	),
 	array(	'URL'			=> 'http://chisel.middlebury.edu/~afranco/drupal/',

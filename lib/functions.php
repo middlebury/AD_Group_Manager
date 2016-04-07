@@ -2,7 +2,7 @@
 
 /**
  * Answer a URL to another action with optional params
- * 
+ *
  * @param string $action
  * @param optional array $params
  * @return void
@@ -17,7 +17,7 @@ function getUrl ($action, array $params = array()) {
 
 /**
  * Forward the user to another action with optional params
- * 
+ *
  * @param string $action
  * @param optional array $params
  * @return void
@@ -72,6 +72,20 @@ function dnToName ($dn) {
 }
 
 /**
+ * Answer true if the current user should be able modify a group.
+ *
+ * @param array $group The group result from an LDAP search.
+ * @return void
+ * @since 2/2/2016
+ */
+function canModifyGroup (array $group) {
+	if (isset($GLOBALS['is_super_admin']) && $GLOBALS['is_super_admin'] === true) {
+		return true;
+	}
+	return (!empty($group['managedby'][0]) && $group['managedby'][0] == $_SESSION['user_dn']);
+}
+
+/**
  * Print an HTML block for a group, respecting permissions.
  *
  * @param LdapConnector $ldap
@@ -80,12 +94,12 @@ function dnToName ($dn) {
  * @since 8/31/09
  */
 function printGroupHtml (LdapConnector $ldap, array $group) {
-	$showControls = (!empty($group['managedby'][0]) && $group['managedby'][0] == $_SESSION['user_dn']);
+	$showControls = canModifyGroup($group);
 
 	$levels = dnToLevels($group['dn']);
-	
+
 	print "\n\t<fieldset class='group'>\n\t\t<legend>".implode(' / ', $levels)."</legend>";
-	
+
 	print "\n\t<div class='manager'>";
 	print "\n\t<h2>Group Manager: </h2>";
 	if (isset($group['managedby'][0])) {
@@ -103,7 +117,7 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 		print "\n\t\t</form>";
 	}
 	print "\n\t</div>";
-	
+
 	print "\n\t<div class='members'>";
 	print "\n\t<h2>Group Members: </h2>";
 	print "\n\t\t<ul>";
@@ -112,7 +126,7 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 		foreach ($group['member'] as $memberDN) {
 			$members = $ldap->read('(objectclass=*)', $memberDN, array('givenName', 'sn', 'mail', 'cn', 'objectclass'));
 			$member = $members[0];
-			
+
 			print "\n\t\t<li>".result_to_name($member);
 			if ($showControls) {
 				print "\n\t\t\t<input type='hidden' class='group_id' value='".base64_encode($group['dn'])."'/>";
@@ -137,13 +151,13 @@ function printGroupHtml (LdapConnector $ldap, array $group) {
 		print "\n\t\t</div>";
 	}
 	print "\n\t</div>";
-	
+
 	print "\n\t</fieldset>";
 }
 
 /**
  * Answer a name from an Ldap user/group entry
- * 
+ *
  * @param array $entry
  * @return string
  */
@@ -228,9 +242,76 @@ function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "
  * @since 9/1/09
  */
 function notify ($groupDN) {
+	$db = get_queue_db();
+	$now = date('c');
+	$stmt = $db->prepare('INSERT INTO notification_queue (queue_time, group_dn) VALUES (?, ?);');
+	$stmt->execute(array($now, $groupDN));
+}
+
+/**
+ * Check the notification queue and send any notifications needed.
+ *
+ * @return void
+ */
+function check_notification_queue () {
+	global $notify_queue_delay;
+	$notify_queue_delay = intval($notify_queue_delay);
+	if ($notify_queue_delay < 1)
+		$notify_queue_delay = 3;
+
+	$db = get_queue_db();
+	$cutoff = date('c', time() - $notify_queue_delay);
+	$stmt = $db->prepare('SELECT group_dn FROM notification_queue WHERE queue_time < ?;');
+	$stmt->execute(array($cutoff));
+	$groups = $stmt->fetchAll(PDO::FETCH_COLUMN);
+	if (count($groups)) {
+		$stmt = $db->prepare('DELETE FROM notification_queue WHERE queue_time < ?;');
+		$stmt->execute(array($cutoff));
+	}
+
+	$groups = array_unique($groups); // Ony send a single notification for each group.
+	foreach ($groups as $group) {
+		send_notification_for_group($group);
+	}
+}
+
+/**
+ * Get the PDO connection for an initialized queue database
+ *
+ * @return PDO
+ */
+function get_queue_db () {
+	static $db;
+	global $notify_queue_dsn, $notify_queue_user, $notify_queue_pass, $notify_queue_options;
+	if (!isset($db)) {
+		$db = new PDO($notify_queue_dsn, $notify_queue_user, $notify_queue_pass, $notify_queue_options);
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		// Ensure that our queue table exists.
+		$db->query('CREATE TABLE IF NOT EXISTS notification_queue (
+	queue_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	group_dn VARCHAR(255) NOT NULL
+);');
+	}
+
+	if (empty($db))
+		throw new Exception('Queue database is unavailable.');
+
+	return $db;
+}
+
+/**
+ * Send a notification for a group change to all listeners.
+ *
+ * @param string $groupDN The group DN that was changed
+ * @return void
+ */
+function send_notification_for_group ($groupDN) {
 	global $notifyConfig;
 
+	print date('c')." Notifying that $groupDN has changed:\n";
 	foreach ($notifyConfig as $config) {
+		print date('c')." \tNotifying ".$config['URL']."\n";
 		$data = array($config['GroupParam'] => $groupDN);
 		$data = array_merge($data, $config['OtherParams']);
 
@@ -247,6 +328,10 @@ function notify ($groupDN) {
 			curl_setopt($ch, CURLOPT_URL, $config['URL'].'?'.http_build_query($data));
 		}
 
+		if (!empty($config['HttpHeaders']) && is_array($config['HttpHeaders'])) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $config['HttpHeaders']);
+		}
+
 		$result = curl_exec($ch);
 		print $result."\n";
 		if ($result === FALSE || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200)
@@ -257,10 +342,10 @@ function notify ($groupDN) {
 
 /**
  * workaround for bug in php 4.3.11 through 4.4.7, 5.1.2 through 5.2.4
- * 
+ *
  * Function by zmorris at zsculpt dot com
  * http://us.php.net/manual/en/function.base64-decode.php#79098
- * 
+ *
  * @param string $data
  * @param boolean $strict
  * @return string
@@ -268,8 +353,7 @@ function notify ($groupDN) {
 function base64_decode_fix($data, $strict = false) {
 	if ($strict) {
 		if (preg_match( '![^a-zA-Z0-9/+=]!', $data))
-			return false;	
+			return false;
 	}
 	return base64_decode($data);
 }
-

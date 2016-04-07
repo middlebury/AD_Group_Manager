@@ -6,12 +6,12 @@
 		<!-- Start Midd 2D -->
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="robots" content="follow,index" />
-		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2d.css" />
-		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2dFlex.css" title="flex" />
-		<link rel="alternate stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2dFixed.css" title="fixed" />
-		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/StyleSheets/Menu.css" />
-		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/StyleSheets/MenuStyle.css" />
-		<script type="text/javascript" src="http://web.middlebury.edu/development/tools/2d/JavaScript/StyleSwitcher.js"></script>
+		<link rel="stylesheet" media="screen" type="text/css" href="<?php echo CDN_BASE; ?>/StyleSheets/2d.css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="<?php echo CDN_BASE; ?>/StyleSheets/2dFlex.css" title="flex" />
+		<link rel="alternate stylesheet" media="screen" type="text/css" href="<?php echo CDN_BASE; ?>/StyleSheets/2dFixed.css" title="fixed" />
+		<link rel="stylesheet" media="screen" type="text/css" href="<?php echo CDN_BASE; ?>/StyleSheets/Menu.css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="<?php echo CDN_BASE; ?>/StyleSheets/MenuStyle.css" />
+		<script type="text/javascript" src="<?php echo CDN_BASE; ?>/JavaScript/StyleSwitcher.js"></script>
 		<!-- End Midd 2D -->
 		
 		<link rel="stylesheet" type="text/css" href="group_manager.css" />
@@ -31,7 +31,7 @@
 				</div>
 				<div class="clear">&#160;</div>
 				<a href="http://www.middlebury.edu">
-					<img class="headerLogo" src="https://web.middlebury.edu/development/tools/2d/Images/mclogo.gif" alt="Click here to return to Middlebury College home page" />
+					<img class="headerLogo" src="<?php echo CDN_BASE; ?>/Images/mclogo.gif" alt="Click here to return to Middlebury College home page" />
 				</a>
 				<div class="headerSite">
 					<h1>Group Manager</h1>

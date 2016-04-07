@@ -2,10 +2,10 @@
 /**
  * @since 8/27/09
  * @package group_manager
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 // Already logged in.
 if (isset($_SESSION['user_dn']) && strlen($_SESSION['user_dn']))
