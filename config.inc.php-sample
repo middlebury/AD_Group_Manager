@@ -28,6 +28,11 @@ define('CAS_PATH', '/cas');
 // 	),
 // );
 
+// Define a list of OUs that will not show group membership.
+// $excludedOUs = array(
+//   'OU=Classes,OU=Groups,DC=middlebury,DC=edu',
+// );
+
 // Configure the first LDAP Server.
 $ldapConfig = array();
 $ldapConfig['LDAPHost']				= 'ad.middlebury.edu';

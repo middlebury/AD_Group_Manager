@@ -188,6 +188,10 @@ function result_to_name ($entry) {
  * @since 8/31/09
  */
 function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "\n\t\t") {
+	global $excludedOUs;
+	if (!isset($excludedOUs))
+		$excludedOUs = array();
+
 	print $tabs."<li class='group'>";
 	print "<a name='".base64_encode($currentDn)."'></a>";
 	print "<a href='";
@@ -213,6 +217,15 @@ function printHierarchy (LdapConnector $ldap, $currentDn, array $open, $tabs = "
 		}
 		// If this is a group, print out its members.
 		else {
+			// If this group is within the excluded group list and user is not a super admin,
+			// don't print out the group members.
+			foreach ($excludedOUs as $excludedOU) {
+				if (in_array($excludedOU, $open) && $GLOBALS['is_super_admin'] === false)  {
+					print '<p>Group membership is hidden by configuration.</p>';
+					print $tabs."</li>";
+					return;
+				}
+			}
 			$groups = $ldap->read('(objectClass=group)', $currentDn, array('managedby', 'member'));
 			if (count($groups) == 1 && isset($groups[0]['member'])) {
 				if (isset($groups[0]['managedby'][0])) {
