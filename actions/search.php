@@ -17,7 +17,7 @@ header('Content-Type: text/plain');
 $q = strtolower($_GET["q"]);
 if (!$q)
 	exit;
-if (!preg_match('/^[\w@.\'_-\s]+$/i', $q))
+if (!preg_match('/^[\w@.\'_\s]+$/i', $q))
 	exit;
 
 if (isset($_GET['limit'])) {

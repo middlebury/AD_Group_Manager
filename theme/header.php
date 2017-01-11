@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Group Manager</title>
-		
+
 		<!-- Start Midd 2D -->
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="robots" content="follow,index" />
@@ -13,9 +13,9 @@
 		<link rel="stylesheet" media="screen" type="text/css" href="<?php echo CDN_BASE; ?>/StyleSheets/MenuStyle.css" />
 		<script type="text/javascript" src="<?php echo CDN_BASE; ?>/JavaScript/StyleSwitcher.js"></script>
 		<!-- End Midd 2D -->
-		
+
 		<link rel="stylesheet" type="text/css" href="group_manager.css" />
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js" type="text/javascript"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js" type="text/javascript"></script>
 		<script type='text/javascript' src='jquery-autocomplete/jquery.autocomplete.js'></script>
 		<link rel="stylesheet" type="text/css" href="jquery-autocomplete/jquery.autocomplete.css" />
 		<script type="text/javascript" src="group_manager.js"></script>
