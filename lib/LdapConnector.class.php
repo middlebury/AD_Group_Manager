@@ -43,10 +43,21 @@ class LdapConnector {
 		/*********************************************************
 		 * Check our configuration
 		 *********************************************************/
-		if (!isset($config['LDAPHost']) || !strlen($config['LDAPHost']))
-			throw new ConfigurationErrorException("Missing LDAPHost configuration");
-		if (!isset($config['LDAPPort']) || !strlen($config['LDAPPort']))
-			throw new ConfigurationErrorException("Missing LDAPPort configuration");
+		// Use a new-style LDAP URL rather than deprecated host/port by default.
+		if (!empty($config['LDAPURL'])) {
+			if (!preg_match('#^ldaps?://.+#', $config['LDAPURL'])) {
+				throw new ConfigurationErrorException("Invalid LDAPURL format");
+			}
+			if (!empty($config['LDAPHost']) || !empty($config['LDAPPort'])) {
+				throw new ConfigurationErrorException("LDAPHost and LDAPPort should be empty if configuring an LDAPURL.");
+			}
+		}
+		else {
+			if (!isset($config['LDAPHost']) || !strlen($config['LDAPHost']))
+				throw new ConfigurationErrorException("Missing LDAPHost configuration");
+			if (!isset($config['LDAPPort']) || !strlen($config['LDAPPort']))
+				throw new ConfigurationErrorException("Missing LDAPPort configuration");
+		}
 
 		if (!isset($config['BindDN']) || !strlen($config['BindDN']))
 			throw new ConfigurationErrorException("Missing BindDN configuration");
@@ -84,8 +95,12 @@ class LdapConnector {
 	 * @return void
 	 **/
 	public function connect() {
-		$this->_connection =
-			ldap_connect($this->_config['LDAPHost'], intval($this->_config['LDAPPort']));
+		if (!empty($this->_config['LDAPURL'])) {
+			$this->_connection = ldap_connect($this->_config['LDAPURL']);
+		}
+		else {
+			$this->_connection = ldap_connect($this->_config['LDAPHost'], intval($this->_config['LDAPPort']));
+		}
 		if (!$this->_connection)
 			throw new LDAPException ("LdapConnector::connect() - could not connect to LDAP host <b>".$this->_config['LDAPHost']."</b>!");
 

@@ -1,4 +1,4 @@
-Copyright &copy; 2009-2016, Middlebury College
+Copyright &copy; 2009-2020, Middlebury College
 License: http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
 
 Author: 	Adam Franco
@@ -20,6 +20,8 @@ For code releases, see:
 
 
 == Change-Log ==
+0.2.1
+ - Added support for ldap:// and ldaps:// configuration urls.
 0.2.0
  - Updated phpCAS from 1.2.2 to 1.3.4
  - New super-admin role

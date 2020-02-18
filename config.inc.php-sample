@@ -35,8 +35,7 @@ define('CAS_PATH', '/cas');
 
 // Configure the first LDAP Server.
 $ldapConfig = array();
-$ldapConfig['LDAPHost']				= 'ad.middlebury.edu';
-$ldapConfig['LDAPPort']				= 389;
+$ldapConfig['LDAPURL']				= 'ldaps://ad.middlebury.edu:636';
 $ldapConfig['BindDN']				= 'binduser';
 $ldapConfig['BindDNPassword']		= 'bindpassword';
 $ldapConfig['BaseDN']				= 'DC=middlebury,DC=edu';
