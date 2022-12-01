@@ -31,6 +31,7 @@ define("MYDIR", realpath(dirname(__FILE__)."/.."));
 global $notify_queue_dsn, $notify_queue_user, $notify_queue_pass, $notify_queue_options;
 global $notifyConfig;
 
+require_once(MYDIR.'/vendor/autoload.php');
 require_once(MYDIR.'/config.inc.php');
 require_once(MYDIR.'/lib/HarmoniException.class.php');
 require_once(MYDIR.'/lib/ErrorPrinter.class.php');
@@ -44,14 +45,12 @@ if (!defined('SHOW_TIMERS'))
 if (!defined('DISPLAY_ERROR_BACKTRACE'))
 	define('DISPLAY_ERROR_BACKTRACE', false);
 
-require_once(MYDIR.'/lib/phpcas/source/CAS.php');
-
 if (!isset($getUserDisplayName)) {
 	$getUserDisplayName = create_function('', 'return phpCAS::getUser();');
 }
 
 // initialize phpCAS
-phpCAS::client(CAS_VERSION_2_0, CAS_HOST, CAS_PORT, CAS_PATH, false);
+phpCAS::client(CAS_VERSION_2_0, CAS_HOST, CAS_PORT, CAS_PATH, CAS_SERVICE_URLS, false);
 // no SSL validation for the CAS server
 phpCAS::setNoCasServerValidation();
 // force CAS authentication

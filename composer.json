@@ -1,0 +1,21 @@
+{
+    "name": "middlebury/ad_group_manager",
+    "description": "A simple web-interface for allowing user-managed group creation in an Active Directory.",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Middlebury\\AdGroupManager\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Adam Franco",
+            "email": "afranco@middlebury.edu"
+        }
+    ],
+    "require": {
+        "apereo/phpcas": "^1.6",
+        "psr/log": "^1.0"
+    }
+}

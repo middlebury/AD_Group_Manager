@@ -6,6 +6,7 @@ define('CDN_BASE', '//cdn.domain.edu/middlebury.edu/2005/2d');
 define('CAS_HOST', 'login.middlebury.edu');
 define('CAS_PORT', 443);
 define('CAS_PATH', '/cas');
+define('CAS_SERVICE_URLS', ['https://toboggan.middlebury.edu', 'https://login.middlebury.edu']);
 
 // Define $getUserDisplayName as a custom callback function for accessing the current user's name.
 // $getUserDisplayName = create_function('', "	return phpCAS::getAttribute('FirstName').' '.phpCAS::getAttribute('LastName');");
